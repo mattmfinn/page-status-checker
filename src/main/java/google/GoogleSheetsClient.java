@@ -14,10 +14,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -25,12 +22,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class SheetsClient
+public class GoogleSheetsClient
 {
     private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final File DATA_STORE_DIR = new File(System.getProperty("user.home"),
             ".credentials/sheets.googleapis.com-crawler");
-    private final static String SECRETS_LOCATION = "./src/main/resources/secrets.json";
+    private final static String SECRETS_LOCATION = "/home/matt/IdeaProjects/page-status-checker/secrets.json";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String APPLICATON_NAME = "Page Status Checker";
     private static final String sheetNamePrefix = "Projectname_";
@@ -47,7 +44,8 @@ public class SheetsClient
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException
     {
         // Load secrets file for authorization
-        InputStream inputStream = SheetsClient.class.getResourceAsStream(SECRETS_LOCATION);
+        File file = new File(SECRETS_LOCATION);
+        InputStream inputStream = new FileInputStream(file);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(inputStream));
 
         // Build and trigger authorization request
