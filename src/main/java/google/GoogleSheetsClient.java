@@ -48,10 +48,13 @@ public class GoogleSheetsClient
         // Iterate over the results, and append to the spreadsheet
         for (PageStatusResult p : pageStatusResultList)
         {
-            ValueRange result = new ValueRange()
-                    .setValues(Arrays.asList(
-                            Arrays.asList(p.webURL, p.statusCode, p.statusDescription)));
-            appendData(result, SPREADSHEET_ID, range);
+            if(p.statusCode > 399)
+            {
+                ValueRange result = new ValueRange()
+                        .setValues(Arrays.asList(
+                                Arrays.asList(p.webURL, p.statusCode, p.statusDescription)));
+                appendData(result, SPREADSHEET_ID, range);
+            }
         }
     }
 
