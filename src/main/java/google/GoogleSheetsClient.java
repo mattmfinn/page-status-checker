@@ -11,16 +11,14 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.Spreadsheet;
-import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
+import com.google.api.services.sheets.v4.model.*;
+import data.PageStatusResult;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class GoogleSheetsClient
 {
@@ -32,10 +30,39 @@ public class GoogleSheetsClient
     private static final String APPLICATON_NAME = "Page Status Checker";
     private static final String sheetNamePrefix = "Projectname_";
     private static final String sheetNamePostfix = "_Page_Status_Results";
+    private static Sheets service;
+    private static final String valueInputOption = "RAW";
+    private static final String range = "Sheet1";
 
-    public void populateNewSpreadsheet() throws IOException, GeneralSecurityException
+    public void populateNewSpreadsheet(List<PageStatusResult> pageStatusResultList) throws IOException, GeneralSecurityException
     {
-        createNewSheet();
+        // Capture the ID, and set the header columns
+        final String SPREADSHEET_ID = createNewSheet();
+
+        // Set the headers of the spreadsheet based on the data object's field names
+        ValueRange headers = new ValueRange()
+                .setValues(Arrays.asList(
+                        Arrays.asList("URL", "Status Code", "Status Description")));
+        appendData(headers, SPREADSHEET_ID, range);
+
+        // Iterate over the results, and append to the spreadsheet
+        for (PageStatusResult p : pageStatusResultList)
+        {
+            ValueRange result = new ValueRange()
+                    .setValues(Arrays.asList(
+                            Arrays.asList(p.webURL, p.statusCode, p.statusDescription)));
+            appendData(result, SPREADSHEET_ID, range);
+        }
+    }
+
+    private static void appendData(ValueRange values, String SPREADSHEET_ID, String range) throws IOException
+    {
+        // Set the body to a ValueRange and write to the columns
+        AppendValuesResponse body = service.spreadsheets().values()
+                .append(SPREADSHEET_ID, range, values)
+                .setValueInputOption(valueInputOption)
+                .setInsertDataOption("INSERT_ROWS")
+                .execute();
     }
 
     /**
@@ -70,7 +97,7 @@ public class GoogleSheetsClient
     private static String createNewSheet() throws IOException, GeneralSecurityException
     {
         // Create the service to allow for creating the sheet via API
-        Sheets service = createService();
+        service = createService();
         Spreadsheet spreadsheet = new Spreadsheet().setProperties(
                 new SpreadsheetProperties().setTitle(createSheetName()));
         spreadsheet = service.spreadsheets().create(spreadsheet)
@@ -81,7 +108,7 @@ public class GoogleSheetsClient
 
     private static String createSheetName()
     {
-        Format format = new SimpleDateFormat("MM/dd/yy");
+        Format format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
         return sheetNamePrefix + format.format(new Date()) + sheetNamePostfix;
     }
 }
