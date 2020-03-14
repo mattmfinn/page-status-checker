@@ -21,7 +21,7 @@ public class WebCrawlerController
         CrawlConfig config = new CrawlConfig();
         config.setHaltOnError(false);
         config.setMaxDepthOfCrawling(crawlDepth);
-        config.setCrawlStorageFolder("/home/matt/IdeaProjects/page-status-checker/src/main/java/data");
+        config.setCrawlStorageFolder("~/storage");
 
         PageFetcher pageFetcher = new PageFetcher(config);
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();

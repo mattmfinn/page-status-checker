@@ -25,7 +25,7 @@ public class GoogleSheetsClient
     private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final File DATA_STORE_DIR = new File(System.getProperty("user.home"),
             ".credentials/sheets.googleapis.com-crawler");
-    private final static String SECRETS_LOCATION = "/home/matt/IdeaProjects/page-status-checker/secrets.json";
+    private final static String SECRETS_LOCATION = "secrets.json";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String APPLICATON_NAME = "Page Status Checker";
     private static String sheetNamePrefix;
