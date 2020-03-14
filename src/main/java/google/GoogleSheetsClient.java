@@ -33,28 +33,23 @@ public class GoogleSheetsClient
     private static Sheets service;
     private static final String valueInputOption = "RAW";
     private static final String range = "Sheet1";
+    private static String SPREADSHEET_ID;
 
-    public void populateNewSpreadsheet(List<PageStatusResult> pageStatusResultList) throws IOException, GeneralSecurityException
+    public static void populateNewSpreadsheet(PageStatusResult pageStatusResultList) throws IOException, GeneralSecurityException
     {
         // Capture the ID, and set the header columns
-        final String SPREADSHEET_ID = createNewSheet();
+        if (SPREADSHEET_ID == null) SPREADSHEET_ID = createNewSheet();
 
-        // Set the headers of the spreadsheet based on the data object's field names
-        ValueRange headers = new ValueRange()
-                .setValues(Arrays.asList(
-                        Arrays.asList("URL", "Status Code", "Status Description")));
-        appendData(headers, SPREADSHEET_ID, range);
-
-        // Iterate over the results, and append to the spreadsheet
-        for (PageStatusResult p : pageStatusResultList)
+        // We want to filter out useless codes, such as Not authorized (401), Forbidden (403), Not Allowed (405)
+        // These are valid responses and do not indicate a problem in most circumstances
+        if (pageStatusResultList.statusCode > 399
+                && !Arrays.asList(401, 403, 405).contains(pageStatusResultList.statusCode))
         {
-            if(p.statusCode > 399)
-            {
-                ValueRange result = new ValueRange()
-                        .setValues(Arrays.asList(
-                                Arrays.asList(p.webURL, p.statusCode, p.statusDescription)));
-                appendData(result, SPREADSHEET_ID, range);
-            }
+            ValueRange result = new ValueRange()
+                    .setValues(Arrays.asList(
+                            Arrays.asList(pageStatusResultList.referringURL, pageStatusResultList.webURL,
+                                    pageStatusResultList.statusCode, pageStatusResultList.statusDescription)));
+            appendData(result, SPREADSHEET_ID, range);
         }
     }
 
@@ -106,6 +101,13 @@ public class GoogleSheetsClient
         spreadsheet = service.spreadsheets().create(spreadsheet)
                 .setFields("spreadsheetId")
                 .execute();
+
+        // Set the headers of the spreadsheet based on the data object's field names
+        ValueRange headers = new ValueRange()
+                .setValues(Arrays.asList(
+                        Arrays.asList("Referring URL", "Broken URL", "Status Code", "Status Description")));
+        appendData(headers, spreadsheet.getSpreadsheetId(), range);
+
         return spreadsheet.getSpreadsheetId();
     }
 
