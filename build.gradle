@@ -6,8 +6,13 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'application'
 
-application {
-    mainClassName('crawl.WebCrawlerController')
+task crawl(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'crawl.WebCrawlerController'
+
+    // The arguments we need for continuous integration - to be passed when
+    // running the gradle / run command
+    args seed, crawlDepth, crawlers, projectName
 }
 
 group 'com.theconstantvariable'

@@ -36,17 +36,11 @@ public class Crawler extends WebCrawler
         // Let's store our data in our data structure
         PageStatusResult pageStatusResult = new PageStatusResult();
 
-        // We want to avoid saving data from URLs that are not relevant to the domain
-        // Check both the referring / parent URL as well as the current URL
-        if(webURL.getURL().contains(WebCrawlerController.seedPartial)
-                && webURL.getParentUrl().contains(WebCrawlerController.seedPartial))
-        {
-            pageStatusResult.webURL = webURL.getURL();
-            pageStatusResult.referringURL = webURL.getParentUrl();
-            pageStatusResult.statusCode = statusCode;
-            pageStatusResult.statusDescription = statusDescription;
-            numberOfCrawledPages++;
-        }
+        pageStatusResult.webURL = webURL.getURL();
+        pageStatusResult.referringURL = webURL.getParentUrl();
+        pageStatusResult.statusCode = statusCode;
+        pageStatusResult.statusDescription = statusDescription;
+        numberOfCrawledPages++;
 
         try
         {

@@ -5,17 +5,22 @@ import com.goikosoft.crawler4j.crawler.CrawlController;
 import com.goikosoft.crawler4j.fetcher.PageFetcher;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtConfig;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtServer;
+import google.GoogleSheetsClient;
 
 public class WebCrawlerController
 {
-    private static final String seed = "";
-    public static final String seedPartial = "";
+    private static String seed;
+    private static int crawlDepth;
+    private static int crawlers;
 
     public static void main(String args[]) throws Exception
     {
+        // Set the args from the command line
+        setArgs(args);
+
         CrawlConfig config = new CrawlConfig();
         config.setHaltOnError(false);
-        config.setMaxDepthOfCrawling(2);
+        config.setMaxDepthOfCrawling(crawlDepth);
         config.setCrawlStorageFolder("/home/matt/IdeaProjects/page-status-checker/src/main/java/data");
 
         PageFetcher pageFetcher = new PageFetcher(config);
@@ -24,6 +29,16 @@ public class WebCrawlerController
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
         controller.addSeed(seed);
-        controller.start(Crawler.class, 100);
+        controller.start(Crawler.class, crawlers);
+    }
+
+    // This is unfortunately clunky. We need to pass the parameters via gradle command in this exact order:
+    // seed, depth, crawlers, projectName
+    private static void setArgs(String args[])
+    {
+        seed = args[0];
+        crawlDepth = Integer.decode(args[1]);
+        crawlers = Integer.decode(args[2]);
+        GoogleSheetsClient.setSheetNamePrefix(args[3]);
     }
 }

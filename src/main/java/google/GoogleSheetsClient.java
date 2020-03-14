@@ -28,7 +28,7 @@ public class GoogleSheetsClient
     private final static String SECRETS_LOCATION = "/home/matt/IdeaProjects/page-status-checker/secrets.json";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String APPLICATON_NAME = "Page Status Checker";
-    private static final String sheetNamePrefix = "Projectname_";
+    private static String sheetNamePrefix;
     private static final String sheetNamePostfix = "_Page_Status_Results";
     private static Sheets service;
     private static final String valueInputOption = "RAW";
@@ -115,5 +115,10 @@ public class GoogleSheetsClient
     {
         Format format = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
         return sheetNamePrefix + format.format(new Date()) + sheetNamePostfix;
+    }
+
+    public static void setSheetNamePrefix(String projectName)
+    {
+        sheetNamePrefix = projectName;
     }
 }
