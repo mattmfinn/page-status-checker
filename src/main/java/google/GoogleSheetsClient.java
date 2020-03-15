@@ -34,10 +34,11 @@ public class GoogleSheetsClient
     private static final String valueInputOption = "RAW";
     private static final String range = "Sheet1";
     private static String SPREADSHEET_ID;
+    public static String sectionName;
 
-    public static void populateNewSpreadsheet(PageStatusResult pageStatusResultList) throws IOException, GeneralSecurityException
+    public static void populateSpreadsheet(PageStatusResult pageStatusResultList) throws IOException, GeneralSecurityException
     {
-        // Capture the ID, and set the header columns
+        // Capture the ID, and later set the header columns
         if (SPREADSHEET_ID == null) SPREADSHEET_ID = createNewSheet();
 
         // We want to filter out useless codes, such as Not authorized (401), Forbidden (403), Not Allowed (405)
@@ -47,8 +48,9 @@ public class GoogleSheetsClient
         {
             ValueRange result = new ValueRange()
                     .setValues(Arrays.asList(
-                            Arrays.asList(pageStatusResultList.referringURL, pageStatusResultList.webURL,
-                                    pageStatusResultList.statusCode, pageStatusResultList.statusDescription)));
+                            Arrays.asList(pageStatusResultList.sectionName, pageStatusResultList.referringURL,
+                                    pageStatusResultList.webURL, pageStatusResultList.statusCode,
+                                    pageStatusResultList.statusDescription)));
             appendData(result, SPREADSHEET_ID, range);
         }
     }
@@ -105,7 +107,7 @@ public class GoogleSheetsClient
         // Set the headers of the spreadsheet based on the data object's field names
         ValueRange headers = new ValueRange()
                 .setValues(Arrays.asList(
-                        Arrays.asList("Referring URL", "Broken URL", "Status Code", "Status Description")));
+                        Arrays.asList("Section Name", "Referring URL", "Broken URL", "Status Code", "Status Description")));
         appendData(headers, spreadsheet.getSpreadsheetId(), range);
 
         return spreadsheet.getSpreadsheetId();

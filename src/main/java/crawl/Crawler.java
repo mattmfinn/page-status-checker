@@ -7,17 +7,15 @@ import data.PageStatusResult;
 import google.GoogleSheetsClient;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class Crawler extends WebCrawler
 {
     // We want web pages, so we will exclude certain file types
     private final static Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
-    GoogleSheetsClient googleSheetsClient = new GoogleSheetsClient();
+    public static GoogleSheetsClient googleSheetsClient = new GoogleSheetsClient();
+    public static String sectionName;
 
     // This is a filter that determines if we should visit a page. As per the EXCLUSIONS variable,
     // we skip certain file types
@@ -36,6 +34,7 @@ public class Crawler extends WebCrawler
         // Let's store our data in our data structure
         PageStatusResult pageStatusResult = new PageStatusResult();
 
+        pageStatusResult.sectionName = sectionName;
         pageStatusResult.webURL = webURL.getURL();
         pageStatusResult.referringURL = webURL.getParentUrl();
         pageStatusResult.statusCode = statusCode;
@@ -44,7 +43,7 @@ public class Crawler extends WebCrawler
 
         try
         {
-            googleSheetsClient.populateNewSpreadsheet(pageStatusResult);
+            googleSheetsClient.populateSpreadsheet(pageStatusResult);
         } catch (IOException e)
         {
             System.out.println(e.getMessage());

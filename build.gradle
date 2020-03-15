@@ -12,7 +12,7 @@ task crawl(type: JavaExec) {
 
     // The arguments we need for continuous integration - to be passed when
     // running the gradle / run command
-    args seed, crawlDepth, crawlers, projectName
+    args seed, crawlDepth, crawlers, projectName, sectionName
 }
 
 group 'com.theconstantvariable'
