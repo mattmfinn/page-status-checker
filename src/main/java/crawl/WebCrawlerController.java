@@ -27,14 +27,22 @@ public class WebCrawlerController
         config.setMaxDepthOfCrawling(crawlDepth);
         config.setCrawlStorageFolder("~/storage");
 
-        PageFetcher pageFetcher = new PageFetcher(config);
-        RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
-        RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
-        CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-
         for(int i = 0; i < seedsList.size(); i++)
         {
             Crawler.sectionName = sectionNameList.get(i);
+
+            /*
+                Connection errors if these are not 'refreshed' before the next run
+                We need to keep the section name accurate, so we are iterating over each pair
+                Of seed <=> sectionName pairs, requiring a new call to the controller.start() method
+             */
+
+            PageFetcher pageFetcher = new PageFetcher(config);
+            RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+            RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+
+            // Start the first in the series of crawls, as specified in the params through Gradle
+            CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
             controller.addSeed(seedsList.get(i));
             controller.start(Crawler.class, crawlers);
         }
