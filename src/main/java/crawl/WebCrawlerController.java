@@ -53,32 +53,22 @@ public class WebCrawlerController
     // seed, depth, crawlers, projectName, sectionName
     private static void setArgs(String args[])
     {
-        seedsList = splitSeeds(args[0]);
+        seedsList = splitArgByComma(args[0]);
         crawlDepth = Integer.decode(args[1]);
         crawlers = Integer.decode(args[2]);
         GoogleSheetsClient.setSheetNamePrefix(args[3]);
-        sectionNameList = splitSectionNames(args[4]);
+        sectionNameList = splitArgByComma(args[4]);
     }
 
     // We will pass a parameter that is a comma separated string of URL seeds. We will need to split by comma.
     // This includes, in the same order, section names
-    private static ArrayList splitSeeds(String seeds)
+    private static ArrayList splitArgByComma(String arg)
     {
-        ArrayList<String> seedsList = new ArrayList<>();
-        for(String s : seeds.split(","))
+        ArrayList<String> argList = new ArrayList<>();
+        for(String s : arg.split(","))
         {
-            seedsList.add(s);
+            argList.add(s);
         }
-        return seedsList;
-    }
-
-    private static ArrayList splitSectionNames(String sectionNames)
-    {
-        ArrayList<String> sectionsList = new ArrayList<>();
-        for(String s : sectionNames.split(","))
-        {
-            sectionsList.add(s);
-        }
-        return sectionsList;
+        return argList;
     }
 }
