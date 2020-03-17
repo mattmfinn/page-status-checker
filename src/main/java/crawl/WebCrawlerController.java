@@ -54,8 +54,8 @@ public class WebCrawlerController
                     "Pages that passed: " +
                             String.valueOf(Crawler.numberOfCrawledPages - GoogleSheetsClient.numberOfPagesAppended),
                     "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
-                    "Pass/Fail Rate: " +
-                            String.valueOf((Crawler.numberOfCrawledPages / GoogleSheetsClient.numberOfPagesAppended) * 100) + "%");
+                    "Failure Rate: " +
+                            String.valueOf((GoogleSheetsClient.numberOfPagesAppended / Crawler.numberOfCrawledPages) * 100) + "%");
         }
         else
         {
