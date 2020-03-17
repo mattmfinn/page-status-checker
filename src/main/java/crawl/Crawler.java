@@ -16,6 +16,8 @@ public class Crawler extends WebCrawler
     private final static Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
     public static GoogleSheetsClient googleSheetsClient = new GoogleSheetsClient();
     public static String sectionName;
+    // Let's log and count how many pages we crawl
+    public static int numberOfCrawledPages = 0;
 
     // This is a filter that determines if we should visit a page. As per the EXCLUSIONS variable,
     // we skip certain file types
@@ -26,8 +28,6 @@ public class Crawler extends WebCrawler
         return !EXCLUSIONS.matcher(href).matches() && href.startsWith(url.toString());
     }
 
-    // For now, let's log and count how many pages we crawl
-    private static int numberOfCrawledPages = 0;
     @Override
     protected void handlePageStatusCode(WebURL webURL, int statusCode, String statusDescription)
     {
@@ -51,6 +51,5 @@ public class Crawler extends WebCrawler
         {
             System.out.println(e.getMessage());
         }
-        System.out.println("***NUMBER OF CRAWLED PAGES: " + Crawler.numberOfCrawledPages + "***");
     }
 }

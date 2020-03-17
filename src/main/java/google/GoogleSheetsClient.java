@@ -35,6 +35,7 @@ public class GoogleSheetsClient
     private static final String range = "Sheet1";
     private static String SPREADSHEET_ID;
     public static String sectionName;
+    public static int numberOfPagesAppended = 0;
 
     public static void populateSpreadsheet(PageStatusResult pageStatusResultList) throws IOException, GeneralSecurityException
     {
@@ -52,7 +53,18 @@ public class GoogleSheetsClient
                                     pageStatusResultList.webURL, pageStatusResultList.statusCode,
                                     pageStatusResultList.statusDescription)));
             appendData(result, SPREADSHEET_ID, range);
+            numberOfPagesAppended++;
         }
+    }
+
+    public static void appendStats(String totalPages, String passedPages, String failedPages, String passRatePercent)
+            throws IOException
+    {
+        ValueRange valueRange = new ValueRange()
+                .setValues(Arrays.asList(
+                        Arrays.asList(totalPages, passedPages, failedPages, passRatePercent)
+                ));
+        appendData(valueRange, SPREADSHEET_ID, range);
     }
 
     private static void appendData(ValueRange values, String SPREADSHEET_ID, String range) throws IOException

@@ -47,6 +47,23 @@ public class WebCrawlerController
             controller.start(Crawler.class, crawlers);
         }
 
+        // Only do this if negative results were found & appended so we do not manipulate a null value
+        if(GoogleSheetsClient.numberOfPagesAppended > 0)
+        {
+            GoogleSheetsClient.appendStats("Number of pages tested: " + Crawler.numberOfCrawledPages,
+                    "Pages that passed: " +
+                            String.valueOf(Crawler.numberOfCrawledPages - GoogleSheetsClient.numberOfPagesAppended),
+                    "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
+                    "Pass/Fail Rate: " +
+                            String.valueOf((Crawler.numberOfCrawledPages / GoogleSheetsClient.numberOfPagesAppended) * 100) + "%");
+        }
+        else
+        {
+            GoogleSheetsClient.appendStats("Number of pages tested: " + Crawler.numberOfCrawledPages,
+                    "Pages that passed: " + Crawler.numberOfCrawledPages,
+                    "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
+                    "Pass Rate: 100%");
+        }
     }
 
     // This is unfortunately clunky. We need to pass the parameters via gradle command in this exact order:
