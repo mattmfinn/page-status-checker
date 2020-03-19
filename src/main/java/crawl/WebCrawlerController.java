@@ -7,6 +7,7 @@ import com.goikosoft.crawler4j.robotstxt.RobotstxtConfig;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtServer;
 import google.GoogleSheetsClient;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ public class WebCrawlerController
     private static List<String> sectionNameList;
     private static int crawlDepth;
     private static int crawlers;
+    // We want a clean decimal, max of 2 places
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     public static void main(String args[]) throws Exception
     {
@@ -55,7 +58,9 @@ public class WebCrawlerController
                             String.valueOf(Crawler.numberOfCrawledPages - GoogleSheetsClient.numberOfPagesAppended),
                     "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
                     "Failure Rate: " +
-                            String.valueOf((GoogleSheetsClient.numberOfPagesAppended / Crawler.numberOfCrawledPages) * 100) + "%");
+                            String.valueOf((decimalFormat.format(
+                                    GoogleSheetsClient.numberOfPagesAppended / Crawler.numberOfCrawledPages
+                                            * 100))) + "%");
         }
         else
         {

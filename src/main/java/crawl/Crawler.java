@@ -17,7 +17,7 @@ public class Crawler extends WebCrawler
     public static GoogleSheetsClient googleSheetsClient = new GoogleSheetsClient();
     public static String sectionName;
     // Let's log and count how many pages we crawl
-    public static int numberOfCrawledPages = 0;
+    public static float numberOfCrawledPages = 0;
 
     // This is a filter that determines if we should visit a page. As per the EXCLUSIONS variable,
     // we skip certain file types

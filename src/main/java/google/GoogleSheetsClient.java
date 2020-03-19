@@ -35,7 +35,7 @@ public class GoogleSheetsClient
     private static final String range = "Sheet1";
     private static String SPREADSHEET_ID;
     public static String sectionName;
-    public static int numberOfPagesAppended = 0;
+    public static float numberOfPagesAppended = 0;
 
     public static void populateSpreadsheet(PageStatusResult pageStatusResultList) throws IOException, GeneralSecurityException
     {
