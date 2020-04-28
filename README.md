@@ -18,7 +18,11 @@ on the website under test.
 **sectionName:** If you have multiple seeds, it is more clear to have a section name. If you have multiple seeds, the
 order in which you place the section names should match the order in which you place the seeds.
 
-#### Sample gradle command to run the project:
+#### Sample gradle commands to run the project:
 
-gradle crawl -Pseed=https://example.com/ -PcrawlDepth=1 -Pcrawlers=200 -PprojectName=Example_ -PsectionName=Home
+`gradle crawl -Pseed=https://example.com/ -PcrawlDepth=1 -Pcrawlers=200 -PprojectName=Example_ -PsectionName=Home`
+
+`gradle crawl -Pseed=https://example.com/,https://example.com/directory -PcrawlDepth=1 -Pcrawlers=200 
+-PprojectName=Example_ -PsectionName=Home,Directory`
+
 

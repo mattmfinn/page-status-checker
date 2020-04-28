@@ -58,8 +58,11 @@ public class GoogleSheetsClient
     }
 
     public static void appendStats(String totalPages, String passedPages, String failedPages, String passRatePercent)
-            throws IOException
+            throws IOException, GeneralSecurityException
     {
+        // If no bad URLs found, create a spreadsheet to append the data
+        if (SPREADSHEET_ID == null) SPREADSHEET_ID = createNewSheet();
+
         ValueRange valueRange = new ValueRange()
                 .setValues(Arrays.asList(
                         Arrays.asList(totalPages, passedPages, failedPages, passRatePercent)
@@ -67,7 +70,7 @@ public class GoogleSheetsClient
         appendData(valueRange, SPREADSHEET_ID, range);
     }
 
-    private static void appendData(ValueRange values, String SPREADSHEET_ID, String range) throws IOException
+    private static void appendData(ValueRange values, String SPREADSHEET_ID, String range) throws IOException, GeneralSecurityException
     {
         // Set the body to a ValueRange and write to the columns
         AppendValuesResponse body = service.spreadsheets().values()
