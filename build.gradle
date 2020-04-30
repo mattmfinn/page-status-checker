@@ -12,7 +12,7 @@ task crawl(type: JavaExec) {
 
     // The arguments we need for continuous integration - to be passed when
     // running the gradle / run command
-    args seed, crawlDepth, crawlers, projectName, sectionName
+    // args seed, crawlDepth, crawlers, sectionName, formUrl
 }
 
 group 'com.theconstantvariable'
@@ -24,8 +24,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.api-client:google-api-client:1.30.4'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.30.4'
-    compile 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
+    compile 'org.apache.httpcomponents:httpclient:4.5.12'
     compile 'com.goikosoft.crawler4j:crawler4j:4.4.2'
 }

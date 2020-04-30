@@ -3,18 +3,17 @@ package crawl;
 import com.goikosoft.crawler4j.crawler.Page;
 import com.goikosoft.crawler4j.crawler.WebCrawler;
 import com.goikosoft.crawler4j.url.WebURL;
-import data.PageStatusResult;
-import google.GoogleSheetsClient;
+import google.GoogleFormPoster;
+import model.PageStatusResult;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Crawler extends WebCrawler
 {
     // We want web pages, so we will exclude certain file types
-    private final static Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
-    public static GoogleSheetsClient googleSheetsClient = new GoogleSheetsClient();
+    private final Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
+    public static GoogleFormPoster googleFormPoster = new GoogleFormPoster(WebCrawlerController.formUrl);
     public static String sectionName;
     // Let's log and count how many pages we crawl
     public static float numberOfCrawledPages = 0;
@@ -31,25 +30,19 @@ public class Crawler extends WebCrawler
     @Override
     protected void handlePageStatusCode(WebURL webURL, int statusCode, String statusDescription)
     {
-        // Let's store our data in our data structure
         PageStatusResult pageStatusResult = new PageStatusResult();
 
-        pageStatusResult.sectionName = sectionName;
-        pageStatusResult.webURL = webURL.getURL();
-        pageStatusResult.referringURL = webURL.getParentUrl();
-        pageStatusResult.statusCode = statusCode;
-        pageStatusResult.statusDescription = statusDescription;
-        numberOfCrawledPages++;
+        // Let's store our data in our data structure, if we have a negative result
+        if (statusCode > 399 && !Arrays.asList(401, 403, 405).contains(statusCode))
+        {
+            pageStatusResult.sectionName = sectionName;
+            pageStatusResult.webURL = webURL.getURL();
+            pageStatusResult.referringURL = webURL.getParentUrl();
+            pageStatusResult.statusCode = statusCode;
+            pageStatusResult.statusCodeDescription = statusDescription;
 
-        try
-        {
-            googleSheetsClient.populateSpreadsheet(pageStatusResult);
-        } catch (IOException e)
-        {
-            System.out.println(e.getMessage());
-        } catch (GeneralSecurityException e)
-        {
-            System.out.println(e.getMessage());
+            googleFormPoster.appendStatusResult(pageStatusResult);
         }
+        numberOfCrawledPages++;
     }
 }

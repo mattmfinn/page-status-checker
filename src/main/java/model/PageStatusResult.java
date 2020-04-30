@@ -1,4 +1,4 @@
-package data;
+package model;
 
 public class PageStatusResult
 {
@@ -6,5 +6,5 @@ public class PageStatusResult
     public String referringURL;
     public String webURL;
     public int statusCode;
-    public String statusDescription;
+    public String statusCodeDescription;
 }

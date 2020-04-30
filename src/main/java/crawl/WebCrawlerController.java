@@ -5,7 +5,7 @@ import com.goikosoft.crawler4j.crawler.CrawlController;
 import com.goikosoft.crawler4j.fetcher.PageFetcher;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtConfig;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtServer;
-import google.GoogleSheetsClient;
+import google.GoogleFormPoster;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ public class WebCrawlerController
     private static List<String> sectionNameList;
     private static int crawlDepth;
     private static int crawlers;
+    public static String formUrl;
     // We want a clean decimal, max of 2 places
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
@@ -51,22 +52,22 @@ public class WebCrawlerController
         }
 
         // Only do this if negative results were found & appended so we do not manipulate a null value
-        if(GoogleSheetsClient.numberOfPagesAppended > 0)
+        if(Crawler.numberOfCrawledPages > 0)
         {
-            GoogleSheetsClient.appendStats("Number of pages tested: " + Crawler.numberOfCrawledPages,
+            Crawler.googleFormPoster.appendStatistics("Number of pages tested: " + Crawler.numberOfCrawledPages,
                     "Pages that passed: " +
-                            String.valueOf(Crawler.numberOfCrawledPages - GoogleSheetsClient.numberOfPagesAppended),
-                    "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
+                            String.valueOf(Crawler.numberOfCrawledPages - Crawler.googleFormPoster.numberOfPagesAppended),
+                    "Pages that failed: " + Crawler.googleFormPoster.numberOfPagesAppended,
                     "Failure Rate: " +
                             String.valueOf((decimalFormat.format(
-                                    GoogleSheetsClient.numberOfPagesAppended / Crawler.numberOfCrawledPages
+                                    Crawler.googleFormPoster.numberOfPagesAppended / Crawler.numberOfCrawledPages
                                             * 100))) + "%");
         }
         else
         {
-            GoogleSheetsClient.appendStats("Number of pages tested: " + Crawler.numberOfCrawledPages,
+            Crawler.googleFormPoster.appendStatistics("Number of pages tested: " + Crawler.numberOfCrawledPages,
                     "Pages that passed: " + Crawler.numberOfCrawledPages,
-                    "Pages that failed: " + GoogleSheetsClient.numberOfPagesAppended,
+                    "Pages that failed: " + Crawler.googleFormPoster.numberOfPagesAppended,
                     "Pass Rate: 100%");
         }
     }
@@ -78,8 +79,8 @@ public class WebCrawlerController
         seedsList = splitArgByComma(args[0]);
         crawlDepth = Integer.decode(args[1]);
         crawlers = Integer.decode(args[2]);
-        GoogleSheetsClient.setSheetNamePrefix(args[3]);
-        sectionNameList = splitArgByComma(args[4]);
+        sectionNameList = splitArgByComma(args[3]);
+        formUrl = args[4];
     }
 
     // We will pass a parameter that is a comma separated string of URL seeds. We will need to split by comma.
