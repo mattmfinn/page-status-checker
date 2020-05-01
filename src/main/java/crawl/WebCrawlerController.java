@@ -52,7 +52,7 @@ public class WebCrawlerController
         }
 
         // Only do this if negative results were found & appended so we do not manipulate a null value
-        if(Crawler.numberOfCrawledPages > 0)
+        if(Crawler.googleFormPoster.numberOfPagesAppended > 0)
         {
             Crawler.googleFormPoster.appendStatistics("Number of pages tested: " + Crawler.numberOfCrawledPages,
                     "Pages that passed: " +
