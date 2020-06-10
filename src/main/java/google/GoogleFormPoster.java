@@ -32,6 +32,7 @@ public class GoogleFormPoster
             client = createDefault();
 
             List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair(CRAWL_TYPE_COLUMN, pageStatusResult.crawlType));
             params.add(new BasicNameValuePair(SECTION_NAME_COLUMN, pageStatusResult.sectionName));
             params.add(new BasicNameValuePair(REFERRING_URL_COLUMN, pageStatusResult.referringURL));
             params.add(new BasicNameValuePair(WEB_URL_COLUMN, pageStatusResult.webURL));

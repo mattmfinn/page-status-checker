@@ -9,22 +9,33 @@ import model.PageStatusResult;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-public class Crawler extends WebCrawler
+public class ImageCrawler extends WebCrawler
 {
     // We want web pages, so we will exclude certain file types
-    private final Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
-    public static GoogleFormPoster googleFormPoster = new GoogleFormPoster(WebCrawlerController.formUrl);
+    private final Pattern EXCLUSIONS = Pattern.compile(".*(\\.(css|js|mid|mp2|mp3|mp4|wav|avi|mov|mpeg|ram|m4v|pdf" +
+            "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+    private final Pattern IMAGES = Pattern.compile(".*(\\\\.(bmp|gif|jpe?g|png|tiff?))$");
+
+    public static GoogleFormPoster googleFormPoster = new GoogleFormPoster(CrawlerController.formUrl);
     public static String sectionName;
     // Let's log and count how many pages we crawl
-    public static float numberOfCrawledPages = 0;
+    public static float numberOfCrawledImages = 0;
 
     // This is a filter that determines if we should visit a page. As per the EXCLUSIONS variable,
-    // we skip certain file types
+    // we skip certain file types but accept image file types, if they are in the domain we desire
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url)
     {
         String href = url.getURL().toLowerCase();
-        return !EXCLUSIONS.matcher(href).matches() && href.startsWith(url.toString());
+        if(EXCLUSIONS.matcher(href).matches())
+        {
+            return false;
+        }
+        else if(IMAGES.matcher(href).matches() && href.contains(sectionName))
+        {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -35,6 +46,7 @@ public class Crawler extends WebCrawler
         // Let's store our data in our data structure, if we have a negative result
         if (statusCode > 399 && !Arrays.asList(401, 403, 405).contains(statusCode))
         {
+            pageStatusResult.crawlType = "Image";
             pageStatusResult.sectionName = sectionName;
             pageStatusResult.webURL = webURL.getURL();
             pageStatusResult.referringURL = webURL.getParentUrl();
@@ -43,6 +55,6 @@ public class Crawler extends WebCrawler
 
             googleFormPoster.appendStatusResult(pageStatusResult);
         }
-        numberOfCrawledPages++;
+        numberOfCrawledImages++;
     }
 }
