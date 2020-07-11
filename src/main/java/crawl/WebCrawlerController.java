@@ -2,6 +2,8 @@ package crawl;
 
 import com.goikosoft.crawler4j.crawler.CrawlConfig;
 import com.goikosoft.crawler4j.crawler.CrawlController;
+import com.goikosoft.crawler4j.crawler.authentication.AuthInfo;
+import com.goikosoft.crawler4j.crawler.authentication.BasicAuthInfo;
 import com.goikosoft.crawler4j.fetcher.PageFetcher;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtConfig;
 import com.goikosoft.crawler4j.robotstxt.RobotstxtServer;
@@ -30,6 +32,12 @@ public class WebCrawlerController
         config.setHaltOnError(false);
         config.setMaxDepthOfCrawling(crawlDepth);
         config.setCrawlStorageFolder("~/storage");
+
+        //Basic Auth implementation
+        //TODO: Restructure these variables and credentials. Possibly dynamically load from command line args
+        List<String> basicAuthCredentials = new ArrayList<>();
+        AuthInfo basicAuth = new BasicAuthInfo("bleeping", "Welcome123", "https://www.bleepingbugs.com");
+        config.addAuthInfo(basicAuth);
 
         for(int i = 0; i < seedsList.size(); i++)
         {
