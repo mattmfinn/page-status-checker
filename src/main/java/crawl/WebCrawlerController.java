@@ -19,6 +19,9 @@ public class WebCrawlerController
     private static List<String> sectionNameList;
     private static int crawlDepth;
     private static int crawlers;
+    private static String isBasicAuth;
+    private static String basicAuthUser;
+    private static String basicAuthPass;
     public static String formUrl;
     // We want a clean decimal, max of 2 places
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -34,10 +37,11 @@ public class WebCrawlerController
         config.setCrawlStorageFolder("~/storage");
 
         //Basic Auth implementation
-        //TODO: Restructure these variables and credentials. Possibly dynamically load from command line args
-        List<String> basicAuthCredentials = new ArrayList<>();
-        AuthInfo basicAuth = new BasicAuthInfo("bleeping", "Welcome123", "https://www.bleepingbugs.com");
-        config.addAuthInfo(basicAuth);
+        if(isBasicAuth.toLowerCase().equals("true"))
+        {
+            AuthInfo basicAuth = new BasicAuthInfo(basicAuthUser, basicAuthPass, seedsList.get(0));
+            config.addAuthInfo(basicAuth);
+        }
 
         for(int i = 0; i < seedsList.size(); i++)
         {
@@ -88,7 +92,10 @@ public class WebCrawlerController
         crawlDepth = Integer.decode(args[1]);
         crawlers = Integer.decode(args[2]);
         sectionNameList = splitArgByComma(args[3]);
-        formUrl = args[4];
+        isBasicAuth = args[4];
+        basicAuthUser = args[5];
+        basicAuthPass = args[6];
+        formUrl = args[7];
     }
 
     // We will pass a parameter that is a comma separated string of URL seeds. We will need to split by comma.
